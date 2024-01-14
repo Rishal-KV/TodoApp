@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import TodoForm from './TodoForm'
 import { v4 as uuidv4 } from 'uuid';
 import Todo from './Todo';
@@ -10,11 +10,25 @@ uuidv4()
 
 
 function TodoWrapper() {
+  let LOCAL_STORAGE_KEY = "Todo"
     const [todos, setTodos] = useState([])
+    
     function addTodo(todo){
         setTodos([...todos,{id : uuidv4(), task : todo, completed : false, isEditing : false  }])
       
     }
+    useEffect(() => {
+      if (todos.length > 0) {localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos))}
+    }, [todos])
+  
+
+  useEffect(() => {
+  const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+  
+  if (storedTodos && Array.isArray(storedTodos)) {
+    setTodos(storedTodos);
+  }
+}, []);
 
 
     //To mark todo
